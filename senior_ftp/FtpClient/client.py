@@ -4,7 +4,7 @@
 import socket,json,os,sys,time,io
 from hashlib import md5
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+# sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 class FtpClient(object):
 
@@ -72,8 +72,8 @@ class FtpClient(object):
 
     def cmd_put(self,*args):
         """上传"""
-        cmd_split =  args[0].split()
-        if len(cmd_split) >1:
+        cmd_split = args[0].split()
+        if len(cmd_split) > 1:
             filename = cmd_split[1]
             if os.path.isfile(filename):
                 filesize = os.stat(filename).st_size
@@ -83,7 +83,7 @@ class FtpClient(object):
                     "size": filesize,
                     "overridden":True,
                 }
-                self.client.send( json.dumps(msg_dic).encode("utf-8")  )
+                self.client.send(json.dumps(msg_dic).encode("utf-8"))
                 # print("send",json.dumps(msg_dic).encode("utf-8") )
                 #防止粘包，等服务器确认
                 server_response = self.client.recv(1024)
@@ -91,23 +91,25 @@ class FtpClient(object):
                 if server_response_data != '200 ok':
                     self.cmd_status(server_response_data)
                 else:
-                    f = open(filename,"rb")
+                    f = open(filename, "rb")
                     send_size = 0
                     num = 0
                     for line in f:
                         self.client.send(line)
                         send_size += len(line)
                         num += 1
-                        if num == 30 and send_size <= filesize:
+                        if num == 15 and send_size <= filesize:
                             FtpClient.bar(send_size,filesize)
                             num = 0
                     else:
-                        FtpClient.bar(send_size, send_size)
-                        print("\n文件 %s 上传成功..." %filename)
+                        f.flush()
                         f.close()
+                        FtpClient.bar(send_size, send_size)
+                        rec = self.client.recv(1024).decode()
+                        print('\n文件 %s 上传成功...' % filename)
                         print('client md5:%s' % (self.md5_func(filename)))
-                        print('server md5:%s' % (self.client.recv(1024).decode()))
-                        if self.md5_func(filename) == self.client.recv(1024).decode():
+                        print('server md5:%s' % rec)
+                        if self.md5_func(filename) == rec:
                             print('上传文件 md5 认证通过！')
                         else:print('上传文件 md5 认证失败！')
 
@@ -132,7 +134,7 @@ class FtpClient(object):
                 if os.path.isfile(filename):
                     print('此文件已存在当前目录，overwrite ?')
                     a = input('>>:').strip()
-                    b = ['y', 'Y', 'Yes', 'yes']
+                    b = ['y', 'Y', 'Yes', 'yes', '']
                     if a in b:
                         self.client.send('知道啦，老铁'.encode())
                         f = open(filename, "wb")

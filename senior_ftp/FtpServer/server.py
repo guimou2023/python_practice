@@ -49,7 +49,7 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
         filename = cmd_dic["filename"]
         filesize = cmd_dic["size"]
         user_dir = os.path.join(FileDir,self.user_name)
-        cmd = 'du -s %s' %user_dir
+        cmd = 'du -s %s' % user_dir
         dir_size = subprocess.getoutput(cmd).split('\t')[0]
         if int(int(dir_size) + filesize) > self.record_user_data['file_size_limit']:
             msg_dic = {
@@ -61,7 +61,7 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
             file_path = os.path.join(user_dir, filename)
             if os.path.isfile(file_path):
                 file_path = os.path.join(user_dir, filename) + ".new"
-            f = open(file_path,"wb")
+            f = open(file_path, "wb")
             self.request.send(b"200 ok")
             received_size = 0
             while received_size < filesize:
@@ -72,6 +72,7 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
                 f.flush()
                 f.close()
                 print("file [%s] has uploaded..." % filename)
+                print(self.md5_func(file_path))
                 self.request.send(self.md5_func(file_path).encode())
 
     def get(self, *args):
@@ -102,10 +103,12 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
 
     def ls_home(self,args):
         ls_path = self.tmp_path
+        print('ls_path',ls_path)
         cmd = 'ls %s' %ls_path
-        cmd_res = os.popen(cmd).read()
         if len(os.listdir(ls_path)) == 0:
             cmd_res = 'Empty！'
+        else:
+            cmd_res = os.popen(cmd).read()
         self.request.send(cmd_res.encode())
 
     def update_tmp_path(self,*args):
