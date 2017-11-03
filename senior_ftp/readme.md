@@ -36,7 +36,7 @@
 * 初始有两个ftp登录账户(abc/abc abc账户家目录配额50M，123/123 123账户家目录配额5Byte)
 * 验证上传功能时，上传后需点击账户家目录文件夹刷新才能看到新文件
 * client.py 里#sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')  
-mac 上调试有的系统需要打开，上传时进度条加载会卡住
+mac 上调试有的系统需要打开，否则会报字符集错误
 
 
 ### 程序调试环境：  
