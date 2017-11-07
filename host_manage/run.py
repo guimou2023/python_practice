@@ -84,10 +84,14 @@ def run():
                     continue
                 elif a == 'q':
                     exit('Bye')
-                for i in host_group.get(group_id)['ip_list']:
-                    j = Process(target=Manage, args=(i, a, config_msg))
-                    j.start()
-                    j.join()
+                else:
+                    obj = []
+                    for i in host_group.get(group_id)['ip_list']:
+                        j = Process(target=Manage, args=(i, a, config_msg))
+                        j.start()
+                        obj.append(j)
+                    for k in obj:
+                        k.join()
 
         else:
             print('主机组不存在')
