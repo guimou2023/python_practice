@@ -5,12 +5,14 @@ from sqlalchemy import Table, Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import UniqueConstraint
-from conf.settings import engine
+from sqlalchemy import create_engine
+from conf.settings import DB_URI
 
 
 """
 初始化数据库
 """
+engine = create_engine(DB_URI, encoding='utf-8')
 
 Base = declarative_base(engine)
 

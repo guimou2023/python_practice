@@ -1,13 +1,12 @@
 #!/usr/local/bin/env python3
 # -*- coding:utf-8 -*-
 # __author__:"Howard"
-# from core.init_db import Student, Teacher, Class, Lession, StudentRecord
 from sqlalchemy.orm import sessionmaker
-from conf.settings import engine
+from core.init_db import engine
 from core.role import TeacherView, StuView
 
 
-class Manage_system(object):
+class ManageSystem(object):
 
     def __init__(self):
         self.session = sessionmaker(engine)()
