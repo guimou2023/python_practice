@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/commons.css"/>
+    <style type="text/css">
+        label {
+                width: 80px;
+                text-align: right;
+                display: inline-block;
+            }
+    </style>
+</head>
+<body>
+    <form action="/login" method="post">
+        <p>
+            <label for="username">用户名：</label>
+            <input id='username' type="text" name="user">
+        </p>
+         <p>
+             <label for="password">密码：</label>
+             <input id="password" type="password">
+             <input type="submit" value="提交">
+         </p>
+    </form>
+    <script src="/static/jquery.min.js"></script>
+    </body>
+</html>
