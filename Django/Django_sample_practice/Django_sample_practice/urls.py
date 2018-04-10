@@ -17,14 +17,16 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.shortcuts import HttpResponse
 from cmdb.views import login
+from cmdb.views import home
 
 
-def home(request):
+def home1(request):
     return HttpResponse('<h1> 哈哈哈 </h1>')
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^xx/', home),
-    url(r'^login/', login),
+    url(r'^xx/', home1),
+    url(r'^login', login),
+    url(r'^home', home),
 
 ]

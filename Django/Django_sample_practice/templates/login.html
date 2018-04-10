@@ -20,8 +20,9 @@
         </p>
          <p>
              <label for="password">密码：</label>
-             <input id="password" type="password">
+             <input id="password" type="password" name="pwd">
              <input type="submit" value="提交">
+             <span style="color: firebrick">{{ error_msg }}</span>
          </p>
     </form>
     <script src="/static/jquery.min.js"></script>
