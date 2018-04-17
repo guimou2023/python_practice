@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+<style>
+        body {
+        margin: 0;
+        padding: 0;
+        }
+        label {
+            display: inline-block;
+            width: 100px;
+            text-align: right;
+        }
+        ul {
+            list-style-type: none;
+            margin: 0 auto;
+            margin-left: 0;
+            width: 300px;
+            padding: 0;
+            overflow: hidden;
+            background-color: #3ab789;
+        }
+
+
+        li a {
+            display: inline-block;
+            color: white;
+            text-align: left;
+{#            padding: 14px 16px;#}
+            text-decoration: none;
+        }
+
+        li a:hover {
+            background-color: #009688;
+        }
+        .hide{
+            display: none;
+        }
+        .item .header{
+            height: 35px;
+            background-color: #9c27b0d4;
+            color: white;
+            line-height: 35px;
+        }
+        .pg-header {
+            height: 48px;
+            background-color: #0fbdad;
+            color: white;
+            text-align: center;
+            line-height: 48px
+        }
+        .pg-content .menu {
+            position: absolute;
+            top: 48px;
+            left: 0;
+            bottom: 0;
+            width: 200px;
+            background-color: #96acc7;
+        }
+        .iterm {
+            padding: 5px;
+            display: block;
+
+        }
+        .pg-content .content {
+            position: absolute;
+            top: 48px;
+            right: 0;
+            left: 205px;
+            bottom: 0;
+            background-color: #b8a9c1;
+            min-width: 980px;
+            /*overflow: auto;*/
+        }
+        .red {
+            color: brown;
+        }
+</style>
+</head>
+<body>
+    <div class="pg-header">
+        <div style="width: 200px;margin-right: 0">
+            欢迎登陆用户管理系统
+        </div>
+    </div>
+
+<p>
+<div class="pg-content">
+    <div class="menu">
+        <a class="iterm" href="/myapp/user_info">用户列表</a>
+        <a class="iterm">用户组</a>
+    </div>
+</div>
+<div class="pg-content">
+    <div class="content">
+            <div>
+            <p>
+                <h3>编辑用户：</h3>
+            </p>
+                <form method="post" action="/myapp/user_edit-{{ user_obj.id }}"><input type="text"  name="username" value="{{ user_obj.username }}">
+                    <input type="text" class="hide" name="u_id" value="{{ user_obj.id }}">
+                    <input type="text" name="pwd" value="{{ user_obj.password }}">
+                    <input type="submit" value="修改">
+                </form>
+            </div>
+    </div>
+</div>
+</p>
+</body>
+</html>
