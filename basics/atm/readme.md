@@ -3,7 +3,7 @@
 ### 作者介绍：
 * author：haohe
 * nickname:Howard
-* :[http://987774031.blog.51cto.com/](http://987774031.blog.51cto.com)
+* My Blog:[http://987774031.blog.51cto.com/](http://987774031.blog.51cto.com)
 
 ### 功能介绍：
 * 可从ATM进入商城，买东西加入购物车，调用信用卡接口结账，不结账再次进入商城，购物车保留上次未结账商品
