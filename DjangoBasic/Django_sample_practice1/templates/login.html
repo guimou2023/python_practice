@@ -7,6 +7,7 @@
 <body>
     <dvi>
         <form action="/login" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
             <p>
                 <label for="username">用户名</label><input id="username" name="user" type="text" placeholder="用户名">
                 <label for="pwd">密码</label><input id="pwd" name="pwd" type="text" placeholder="密码">

@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Title</title>
+    <style type="text/css">
+
+        label {
+            width: 100px;
+            text-align: right;
+            display: inline-block;
+
+        }
+    </style>
+</head>
+<body>
+        <form id="FM" action="/myapp/login/" method="post">
+            {% csrf_token %}
+                <p>
+                    <label for="user">用户名：</label>
+                    <input id="user" name="user" type="text" placeholder="用户名">
+                </p>
+                <p>
+                    <label for="pwd">密码：</label>
+                    <input id="pwd" name="pwd" type="text" placeholder="密码">
+                    <a id="submit">提交</a>
+                </p>
+
+        </form>
+<script src="/static/jquery.js" type="application/javascript">
+</script>
+<script type="application/javascript">
+    $(function () {
+        $('#submit').click(function () {
+            $.ajax({
+                url: '/myapp/vlogin/',
+                type: 'POST',
+                data: $('#FM').serialize(),
+                dataType: "JSON",
+                success: function (res) {
+                   console.log(res.errors.user[0].messages)
+                },
+                error: function () {
+
+                }
+            })
+        })
+    })
+</script>
+</body>
+</html>

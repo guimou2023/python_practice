@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Title</title>
+    <style type="text/css">
+        .shadow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: black;
+            opacity: 0.4;
+            z-index: 100;
+        }
+        .add_mode, .edit_mode {
+            position: fixed;
+            width: 500px;
+            height: 400px;
+            background: white;
+            top: 50%;
+            right: 50%;
+            z-index: 101;
+            margin-right: -250px;
+            margin-top: -220px;
+        }
+        .delete_confirm {
+            position: fixed;
+            width: 200px;
+            height: 100px;
+            background: white;
+            top: 50%;
+            right: 50%;
+            z-index: 101;
+            margin-right: -100px;
+            margin-top: -50px;
+        }
+        .hide {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<input id="add_app" type="button" value="添加">
+
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>项目</th>
+        <th>主机</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for app in app_list %}
+        <tr aid="{{ app.id }}" app_name="{{ app.name }}">
+            <td>{{ app.name }}</td>
+            <td>
+                {% for h in app.r.all %}
+                    <span hid="{{ h.nid }}" style="display: inline-block;background: #0fbdad;padding: 5px;"> {{ h.hostname }} </span>
+                {% endfor %}
+            </td>
+            <td ><a class="edit">编辑</a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<div class="shadow hide"></div>
+
+
+{#添加弹出框开始#}
+    <div class="add_mode hide">
+        <form id="add_app_form" action="/myapp1/host/" method="post">
+            <div>
+                <input type="text" placeholder="应用名称" name="app_name">
+            </div>
+            <div>
+                <select name="host_list" multiple>
+                    {% for h in host_list %}
+                        <option value={{ h.nid }}>{{ h.hostname }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <input class="cancel" type="button" value="取消">
+                <button id="app_add_submit" type="button">项目创建确认</button>
+                <span id="error_msg" style="color: #0fbdad"></span>
+            </div>
+        </form>
+    </div>
+{#添加弹出框结束#}
+
+{#编辑弹出框开始#}
+    <div class="edit_mode hide">
+        <form id="edit_app_form" action="/myapp1/host/" method="post">
+            <div>
+                <input type="text"  name="app_name">
+            </div>
+            <div>
+                <select id="host_list" name="host_list" multiple>
+                    {% for h in host_list %}
+                        <option value={{ h.nid }}>{{ h.hostname }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <input class="cancel" type="button" value="取消">
+                <button id="app_add_submit" type="button">项目创建确认</button>
+                <span id="error_msg" style="color: #0fbdad"></span>
+            </div>
+        </form>
+    </div>
+{#编辑弹出框结束#}
+
+    <script src="/static/jquery.js">
+    </script>
+    <script>
+        $(function () {
+            $('#add_app').click(function () {
+                $('.shadow,.add_mode').removeClass('hide')
+            })
+
+            $('.edit').click(function () {
+                $('.shadow,.edit_mode').removeClass('hide')
+                var aid = $(this).parent().parent().attr('aid');
+                var app_pre_name = $(this).parent().parent().attr('app_name');
+                var host_list = []
+                $(this).parent().prev().children().each(function () {
+                    var hid = $(this).attr('hid');
+                    host_list.push(hid)
+                })
+                $('#edit_app_form').find('select').val(host_list);
+                $('#edit_app_form').find('input[name="app_name"]').val(app_pre_name);
+            })
+            $('.host_delete').click(function () {
+                var hid = $(this).parent().parent().attr('hid');
+                $.ajax({
+                    url: "/myapp1/ajax_delete/",
+                    type: "POST",
+                    data: {
+                        'nid': hid,
+                    },
+                    success: function (data) {
+                        alert(data);
+                    }
+                })
+                location.reload();
+            })
+
+            $('.cancel').click(function () {
+                $('.shadow,.add_mode,.edit_mode').addClass('hide')
+            })
+
+            $('#app_add_submit').click(function () {
+                $.ajax({
+                    url: "/myapp1/app/",
+                    type: "POST",
+                    data: $("#add_app_form").serialize(),
+                    dataType: 'JSON',
+                    // traditional: "true",
+                    success: function (obj) {
+                        if(obj.status){
+                            alert('添加成功');
+                        }
+                        else {
+                            alert(obj.error)
+                        }
+                        location.reload();
+
+                    }
+                })
+            })
+            $('#edit_submit').click(function () {
+                $.ajax({
+                    url: "/myapp1/app/",
+                    type: "POST",
+                    data: $('#edit_form').serialize(),
+                    success: function (data) {
+                         location.reload();
+                    }
+                })
+            })
+        })
+    </script>
+</body>
+</html>

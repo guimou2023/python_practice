@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Title</title>
+    <style type="text/css">
+        .paginator .pag {
+            display: inline-block;
+            padding: 5px;
+            background-color: aquamarine;
+            margin: 3px;
+
+        }
+        .paginator .pag.active {
+            background-color: #009688;
+
+        }
+    </style>
+</head>
+<body>
+    <ul>
+            {% for d in data_list %}
+                {% include 'pag_data.html' %}
+            {% endfor %}
+    </ul>
+    <div>
+        <select id='cp' onchange="changePageSize(this);">
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="30">30</option>
+            <option value="40">40</option>
+            <option value="50">50</option>
+        </select>
+    </div>
+    <div class="paginator">{{ pagination_str| safe }}</div>
+<script src="/static/jquery.js"></script>
+<script src="/static/jquery.cookie.js"></script>
+<script>
+    $(function () {
+        var v = $.cookie('num_per_pag');
+        if(!v){
+            v = 10;
+        }
+        $('#cp').val(v);
+        $.cookie('num_per_pag', v)
+    })
+    function changePageSize(ths) {
+        var v = $(ths).val();
+
+        //$.cookie('num_per_pag', v, {path: "/myapp/paging/"});
+        //$.cookie('num_per_pag', v, {path: '/'})
+        $.cookie('num_per_pag', v)
+        var v1 = $.cookie('num_per_pag')
+        console.log(v1);
+        location.reload();
+    }
+</script>
+</body>
+</html>

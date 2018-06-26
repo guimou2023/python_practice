@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Title</title>
+</head>
+<body>
+    <table border="1">
+        <thead>
+            <tr>
+                <td>员工姓名</td>
+                <td>功能</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mo in mo_obj_list %}
+                <tr>
+                    <td>{{ mo.staff_name }}</td>
+                    <td><a href="/myapp/modelform_useredit-{{ mo.id }}">编辑</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

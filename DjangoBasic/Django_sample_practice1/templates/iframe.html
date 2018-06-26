@@ -1,0 +1,46 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Title</title>
+</head>
+<body>
+<div>iframe用法一：</div>
+    <iframe id='ifm' src="https://www.baidu.com"></iframe>
+    <input id="url" name="collect"><button onclick="UpdateIframe();">iframe请求</button>
+
+    <P>----------------------分隔符--------------------------</P>
+
+<div>iframe用法二：</div>
+
+    <form action="/myapp/iframe/" method="post" target="ifm1">
+        {% csrf_token %}
+        <iframe name="ifm1" id="ifm1"></iframe>
+        <input name="user" type="text">
+        <input name="pwd" type="text">
+        <input type="submit" value="ifram提交">
+        <button type="submit">test</button>
+    </form>
+
+
+<script src="/static/jquery.js"></script>
+<script src="/static/jquery.cookie.js"></script>
+<script>
+    $(function () {
+       $('#ifm1').load(function () {
+            //加载完成，需要执行的代码
+            var text = $('#ifm1').contents().find('body').text();
+            //console.log('现在数据返回了,iframe的值为:')
+            var obj = JSON.parse(text);
+            console.log(obj);
+        })
+    })
+    function UpdateIframe() {
+        var url = $('#url').val()
+        console.log(url)
+        $('#ifm').attr('src', url)
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Title</title>
+    <style type="text/css">
+        .shadow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: black;
+            opacity: 0.4;
+            z-index: 100;
+        }
+        .add_mode, .edit_mode {
+            position: fixed;
+            width: 500px;
+            height: 400px;
+            background: white;
+            top: 50%;
+            right: 50%;
+            z-index: 101;
+            margin-right: -250px;
+            margin-top: -220px;
+        }
+        .delete_confirm {
+            position: fixed;
+            width: 200px;
+            height: 100px;
+            background: white;
+            top: 50%;
+            right: 50%;
+            z-index: 101;
+            margin-right: -100px;
+            margin-top: -50px;
+        }
+        .hide {
+            display: none;
+        }
+    </style>
+</head>
+<body style="background: lightgoldenrodyellow">
+    <div class="shadow hide"></div>
+    <div class="delete_confirm hide">
+        <button id="delete_submit" type="button">删除确认</button>
+    </div>
+
+{#    添加弹出框开始#}
+    <div class="add_mode hide">
+        <form id="add_form" action="/myapp1/host/" method="post">
+            <div>
+                <input id="host_name" type="text" placeholder="主机名" name="host_name">
+            </div>
+            <div>
+                <input id="ip" type="text" placeholder="IP" name="ip">
+            </div>
+            <div>
+                <input id="port" type="text" placeholder="端口" name="port">
+            </div>
+            <div>
+                <select id="b_id" name="b_id">
+                    {% for ca in ca_list %}
+                        <option value={{ ca.id }}>{{ ca.caption }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <input class="cancel" type="button" value="取消">
+                <input type="submit" value="提交">
+                <button id="ajax_submit" type="button">ajax提交1</button>
+                <span id="error_msg" style="color: #0fbdad"></span>
+{#                <a id="ajax_submit">ajax提交</a>#}
+            </div>
+        </form>
+    </div>
+{#    添加弹出框结束#}
+
+{#    编辑弹出框开始#}
+    <div class="edit_mode hide">
+        <form id="edit_form" action="/myapp1/host/" method="post">
+                <input type="text" style="display: none" name="nid">
+                <input type="text" style="display: none" placeholder="主机名" name="host_name">
+                <input type="text" style="display: none" placeholder="IP" name="ip">
+                <input type="text" style="display: none" placeholder="端口" name="port">
+            <div>
+                <select id="b_id" name="b_id">
+                    {% for ca in ca_list %}
+                        <option value={{ ca.id }}>{{ ca.caption }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <input class="cancel" type="button" value="取消">
+                <button id="edit_submit" type="button">保存编辑</button>
+            </div>
+        </form>
+    </div>
+{#    添加弹出框结束#}
+    <p>
+        <h3>部门列表：</h3>
+    <input id="add_host" type="button" value="添加">
+        <table border="1">
+            <thead>
+                 <tr>
+                     <th>序号</th>
+                     <th>主机名</th>
+                     <th>IP</th>
+                     <th>端口</th>
+                     <th>业务线名称</th>
+                     <th>操作</th>
+                 </tr>
+            </thead>
+            <tbody>
+                {% for i in v1 %}
+                     <tr hid="{{ i.nid }}" bid="{{ i.b_id }}">
+                        <td> {{ forloop.counter }} </td>
+                        <td> {{ i.hostname }} </td>
+                        <td> {{ i.ip }} </td>
+                        <td> {{ i.port }} </td>
+                        <td> {{ i.b.caption }} </td>
+                        <td>
+                             <a class="edit">编辑</a>
+                             <a class="host_delete">删除</a>
+                        </td>
+                     </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </p>
+    <script src="/static/jquery.js">
+    </script>
+    <script>
+        $(function () {
+            $('#add_host').click(function () {
+                $('.shadow,.add_mode').removeClass('hide')
+            })
+
+            $('.edit').click(function () {
+                $('.shadow,.edit_mode').removeClass('hide')
+                var hid = $(this).parent().parent().attr('hid');
+                var bid = $(this).parent().parent().attr('bid');
+                $('#edit_form').find('select').val(bid);
+                $('#edit_form').find('input[name="nid"]').val(hid);
+            })
+            $('.host_delete').click(function () {
+                var hid = $(this).parent().parent().attr('hid');
+                $.ajax({
+                    url: "/myapp1/ajax_delete/",
+                    type: "POST",
+                    data: {
+                        'nid': hid,
+                    },
+                    success: function (data) {
+                        alert(data);
+                    }
+                })
+                location.reload();
+            })
+
+            $('.cancel').click(function () {
+                $('.shadow,.add_mode,.edit_mode').addClass('hide')
+            })
+
+            $('#ajax_submit').click(function () {
+                $.ajax({
+                    url: "/myapp1/ajax_submit/",
+                    type: "POST",
+                    data: {
+                        'host_name': $('#host_name').val(),
+                        'ip': $('#ip').val(),
+                        'port': $('#port').val(),
+                        'b_id': $('#b_id').val(),
+                    },
+{#                    data: $('#add_from').serialize(),#}
+                    success: function (data) {
+                        var obj = JSON.parse(data)
+                        if(obj.status){
+                            location.reload();
+                        }
+                        else {
+{#                            alert(obj.error);#}
+                            $('#error_msg').text(obj.error)
+                            setTimeout(function () {
+                                $('#error_msg').text('')
+                            }, 2000)
+                        }
+                    }
+                })
+            })
+            $('#edit_submit').click(function () {
+                $.ajax({
+                    url: "/myapp1/edit_submit/",
+                    type: "POST",
+                    data: $('#edit_form').serialize(),
+                    success: function (data) {
+                         location.reload();
+                    }
+                })
+            })
+        })
+    </script>
+</body>
+</html>

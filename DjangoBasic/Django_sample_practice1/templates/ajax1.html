@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Title</title>
+    <style>
+    </style>
+</head>
+<body>
+    <input type="button" onclick="Ajax_click();" value='原生XMLHttpRequest提交' style="background: greenyellow;padding: 15px 30px;">
+    <p></p>
+    <input type="button" onclick="JqSendRequest();" value='jquery_ajax提交' style="background: green;padding: 15px 30px;">
+
+<script src="/static/jquery.js"></script>
+<script src="/static/jquery.cookie.js"></script>
+<script>
+    var csrftoken = $.cookie('csrftoken');
+
+    // 定义兼容
+    function GetXHR(){
+            var xhr = null;
+            if(XMLHttpRequest){
+                xhr = new XMLHttpRequest();
+            }else{
+                xhr = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            return xhr;
+
+        }
+
+    function Ajax_click() {
+        // var xhr = new XMLHttpRequest()
+        var xhr = GetXHR();
+        xhr.open('POST', '/myapp/ajax1/', true );
+        // true 是异步开关
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset-UTF-8');
+        // 不设置上面项，后台request.POST拿不到数据
+        xhr.send("user=root;type=原生ajax");
+        xhr.onreadystatechange = function () {
+            if(xhr.readyState==4){
+                console.log(xhr.responseText)
+                console.log(JSON.parse(xhr.responseText))
+            }
+        };
+
+    }
+
+    function JqSendRequest(){
+       $.ajaxSetup({
+            data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+         });
+        $.ajax({
+            url: "/myapp/ajax1/",
+            type: 'POST',
+            dataType: 'text',
+            data: {
+                'user': 'root',
+                'type': 'jquery_ajax'
+            },
+            success: function(data, statusText, xmlHttpRequest){
+                console.log(data);
+                console.log(statusText)
+                console.log(xmlHttpRequest)
+            }
+        })
+    }
+</script>
+<script type="text/javascript"></script>
+</body>
+</html>

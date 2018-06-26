@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Title</title>
+</head>
+<body>
+    <p>
+        <h3>部门列表(对象)：</h3>
+        <ul>
+        {% for i in v1 %}
+            <li>
+            {{ i.id }} {{ i.caption }} {{ i.EnName }}
+            </li>
+        {% endfor %}
+        </ul>
+    </p>
+    <p>
+        <h3>部门列表(字典)：</h3>
+        <ul>
+        {% for i in v2 %}
+            <li>
+            {{ i.id }} {{ i.caption }} {{ i.EnName }}
+            </li>
+        {% endfor %}
+        </ul>
+    </p>
+    <p>
+        <h3>部门列表(元组)：</h3>
+        <ul>
+        {% for i in v3 %}
+            <li>
+            {{ i.0 }} {{ i.1 }} {{ i.2 }}
+            </li>
+        {% endfor %}
+        </ul>
+    </p>
+</body>
+</html>

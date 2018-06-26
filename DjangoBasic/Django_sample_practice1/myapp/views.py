@@ -28,13 +28,13 @@ def login(request):
 
         # fname = request.POST.get("fname")
         # print('name:', fname, type(fname))
-
+        print(request.FILES)
         file_obj = request.FILES.get("fname")
         print('name1:', file_obj, 'obj_name:{}'.format(file_obj.name), type(file_obj))
+        f = open('upload/{}'.format(file_obj.name), 'wb')
         for i in file_obj.chunks():
-            f = open('upload/{}'.format(file_obj.name),'wb')
             f.write(i)
-            f.close()
+        f.close()
         return render(request, 'login.html')
 
 

@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Title</title>
+    <style type="text/css">
+        .upload {
+            height: 50px;
+            width: 150px;
+            background-color: #0fbdad;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 90;
+            text-align: center;
+            line-height: 50px;
+            border: none;
+            border-radius: 5px;
+
+        }
+        .file {
+            height: 50px;
+            width: 150px;
+            background-color: #0fbdad;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            opacity: 0;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+{#<form action="/myapp/preview/" method="post" enctype="multipart/form-data">#}
+{#    {% csrf_token %}#}
+{#    <div style="width: 200px;height: 100px;position: relative;">#}
+{#    <input type="file" name="fname" class="file" id="loadFile">#}
+{#    <a class="upload">上传</a>#}
+{#    <input type="submit" style="margin-top: 50px;" value="form提交">#}
+{#    <input type="button"  value="xml提交" onclick="xhrSubmit();">#}
+{#    <input type="button"  value="jquery提交" onclick="jquerySubmit();">#}
+{#    </div>#}
+{#</form>#}
+
+<form id="form2" action="/myapp/preview/" method="post" enctype="multipart/form-data" target="ifm">
+    {% csrf_token %}
+    <iframe name="ifm" id="ifm" style="display: none;"></iframe>
+    <div style="width: 200px;height: 100px;position: relative;">
+    <input type="file" name="fname" class="file" id="loadFile" onchange="changeUpdate();">
+    <a class="upload">图片上传并预览</a>
+{#    <input type="submit"  value="iframe图片预览提交" style="margin-top: 50px;">#}
+    </div>
+</form>
+<div id="preview"></div>
+<script src="/static/jquery.js"></script>
+<script src="/static/jquery.cookie.js"></script>
+<script>
+
+    $(function () {
+        $('#ifm').load(function () {
+        //加载完成，需要执行的代码
+        $('#preview').empty()
+        var text = $('#ifm').contents().find('body').text();
+        var obj = JSON.parse(text);
+        console.log(obj)
+        var imgTag = document.createElement('img');
+        imgTag.src = '/' +  obj.file_path;
+        $('#preview').append(imgTag)
+        })
+    })
+
+    function changeUpdate() {
+        $('#form2').submit();
+    }
+
+    var csrftoken = $.cookie('csrftoken');
+    function xhrSubmit() {
+        // $('#loadFile')[0]
+        var file_obj = document.getElementById('loadFile').files[0];
+        var fd = new FormData();
+        fd.append('fname', file_obj);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/myapp/preview/', true);
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        xhr.onreadystatechange = function () {
+            if(xhr.readyState == 4){
+                console.log(xhr.responseText)
+            }
+        }
+        xhr.send(fd);
+
+    }
+    
+    function jquerySubmit() {
+        var file_obj = document.getElementById('loadFile').files[0];
+        var fd = new FormData();
+        fd.append('fname', file_obj);
+        //使用FormData时，下面方法不能解决csrf问题
+        //$.ajaxSetup({
+        //    data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+        //});
+        $.ajax({
+            url: '/myapp/preview/',
+            type: 'POST',
+            data: fd,
+            headers:{"X-CSRFToken":$.cookie('csrftoken')}, //这是把csrf传入服务器.
+            processData: false, // tell jQuery not to process data
+            contentType: false, // tell jQuery not to set contentType
+            success: function (a1, a2,a3) {
+                console.log(a1);
+                console.log(a2);
+                console.log(a3);
+            }
+        })
+
+    }
+
+</script>
+</body>
+</html>
